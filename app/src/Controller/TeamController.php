@@ -9,6 +9,7 @@ use App\Exception\TeamCreationException;
 use App\Exception\TeamDeleteException;
 use App\Exception\TeamEditException;
 use App\Exception\TeamNotFoundException;
+use App\Service\Reader\PokemonReader;
 use App\Service\Reader\TeamReader;
 use App\Service\Writer\TeamWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,14 +36,21 @@ class TeamController extends AbstractController
     private TeamReader $teamReader;
 
     /**
+     * @var PokemonReader
+     */
+    private PokemonReader $pokemonReader;
+
+    /**
      * TeamController constructor.
      * @param TeamWriter $teamWriter
      * @param TeamReader $teamReader
+     * @param PokemonReader $pokemonReader
      */
-    public function __construct(TeamWriter $teamWriter, TeamReader $teamReader)
+    public function __construct(TeamWriter $teamWriter, TeamReader $teamReader, PokemonReader $pokemonReader)
     {
         $this->teamWriter = $teamWriter;
         $this->teamReader = $teamReader;
+        $this->pokemonReader = $pokemonReader;
     }
 
     /**
@@ -72,13 +80,22 @@ class TeamController extends AbstractController
     /**
      * @return JsonResponse
      * @Route("/", methods={"GET"})
+     * @throws \Exception
      */
     public function getAllTeams(): JsonResponse
     {
         $teams = $this->teamReader->getTeams();
         $serializedTeams = [];
         foreach ($teams as $team) {
-            $serializedTeams[] = $team->serialize();
+            $serializedTeam = $team->serialize();
+            $serializedTeam['baseExperienceSum'] = 0;
+            $serializedTeam['pokemonList'] = [];
+            $pokemonList = $this->pokemonReader->getPokemonListByTeam($team);
+            foreach ($pokemonList as $pokemon) {
+                $serializedTeam['pokemonList'][] = $pokemon->serialize();
+                $serializedTeam['baseExperienceSum'] += $pokemon->getBaseExperience();
+            }
+            $serializedTeams[] = $serializedTeam;
         }
 
         return new JsonResponse(['teams' => $serializedTeams]);
