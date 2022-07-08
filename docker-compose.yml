@@ -26,6 +26,16 @@
       depends_on:
         - database
 
+    front-end:
+      container_name: front-end
+      build: ./frontend
+      environment:
+        - REACT_APP_BACK_END_API=http://localhost:8080/api
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./frontend:/var/www/pokemon-tournament-server/frontend
+
     nginx:
       container_name: nginx
       image: nginx:stable-alpine
