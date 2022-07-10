@@ -70,11 +70,20 @@ class TeamController extends AbstractController
      * @return JsonResponse
      * @Route("/{id}", methods={"GET"})
      * @throws \Exception
+     * @noinspection UnsupportedStringOffsetOperationsInspection
      */
     public function getTeamById(int $id): JsonResponse
     {
         $team = $this->teamReader->getTeamById($id);
-        return new JsonResponse(['team' => $team->serialize()]);
+        $serializedTeam = $team->serialize();
+        $serializedTeam['baseExperienceSum'] = 0;
+        $serializedTeam['pokemonList'] = [];
+        $pokemonList = $this->pokemonReader->getPokemonListByTeam($team);
+        foreach ($pokemonList as $pokemon) {
+            $serializedTeam['pokemonList'][] = $pokemon->serialize();
+            $serializedTeam['baseExperienceSum'] += $pokemon->getBaseExperience();
+        }
+        return new JsonResponse(['team' => $serializedTeam]);
     }
 
     /**
@@ -111,9 +120,12 @@ class TeamController extends AbstractController
      */
     public function editTeam(int $id, Request $request): JsonResponse
     {
-        $new_name = $request->get('name', null);
+        $params = json_decode($request->getContent(), true);
+        $new_name = $params['name'] ?: null;
         $teamRequest = new TeamRequest($id, $new_name, null);
-        return new JsonResponse(['message' => $this->teamWriter->editTeam($teamRequest)]);
+        $response = new JsonResponse(['message' => $this->teamWriter->editTeam($teamRequest)]);
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 
     /**
