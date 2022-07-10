@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter, Outlet, Route, Routes, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import CreateTeam from "./components/team/CreateTeam";
 import ListTeam from "./components/team/ListTeam";
 import EditTeam from "./components/team/EditTeam";
@@ -33,7 +33,6 @@ function App() {
                         }}>
                             <Outlet />
                         </div>
-                        {/* <Footer /> */}
                     </div>
                 }>
                     <Route path="" element={
