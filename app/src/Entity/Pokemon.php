@@ -60,7 +60,7 @@ class Pokemon implements \Serializable
     /**
      * @var Team
      * @ORM\ManyToOne(targetEntity="App\Entity\Team")
-     * @ORM\JoinColumn(referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private Team $team;
 
