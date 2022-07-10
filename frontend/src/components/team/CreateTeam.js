@@ -41,7 +41,7 @@ function CreateTeam() {
 
     function createClick(event) {
         if (teamDetail.name === "") {
-            toast.error("Team name can't be an empty string!");
+            toast.error("team name can't be an empty string!");
         }
         try {
             event.preventDefault();
@@ -77,7 +77,7 @@ function CreateTeam() {
                 <div style={{
                     paddingTop: "50px",
                     textAlign: "center",
-                }}></div>
+                }}/>
                 <Button variant="contained" type='submit'>Create Team</Button>
             </form>
             <form onSubmit={handleClick} style={{ padding: "10px" }}>

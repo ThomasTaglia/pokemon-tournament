@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter, Outlet, Route, Routes, Link } from "react-router-dom";
-import Home from "./Pages/Home";
-import Teams from "./Pages/Teams";
-import Pokemons from "./Pages/Pokemons";
-import CreateTeam from "./Components/Team/CreateTeam";
-import ListTeam from "./Components/Team/ListTeam";
-import EditTeam from "./Components/Team/EditTeam";
+import CreateTeam from "./components/team/CreateTeam";
+import ListTeam from "./components/team/ListTeam";
+import EditTeam from "./components/team/EditTeam";
+import Header from "./components/layout/Header";
 
 const navItems = [
     {
@@ -13,24 +11,38 @@ const navItems = [
         link: "/",
     },
     {
+        title: "CREATE TEAM",
+        link: "/team/create",
+    },
+    {
         title: "TEAMS",
-        link: "/team",
+        link: "/team/list",
     },
 ];
 
 function App() {
-
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home navItems={navItems} />}>
+                <Route path="/" element={
+                    <div>
+                        <Header navItems={navItems}/>
+                        <div style={{
+                            minHeight:"1000px",
+                            paddingTop:"50px",
+                        }}>
+                            <Outlet />
+                        </div>
+                        {/* <Footer /> */}
+                    </div>
+                }>
                     <Route path="" element={
                         <div style={{
                             minHeight: "1000px",
                             textAlign: "center",
                             textAnchor: "middle",
                         }}>
-                            {/* <Link to="/team/list">Show All Teams</Link> */}
+                            
                         </div>
                     } />
                     <Route path="team" element={
